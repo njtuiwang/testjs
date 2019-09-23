@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='../assets/fullcalendar-4.3.1/packages/core/main.css' rel='stylesheet' />
+    <link href='../assets/fullcalendar-4.3.1/packages/daygrid/main.css' rel='stylesheet' />
+    <link href='../assets/fullcalendar-4.3.1/packages/timegrid/main.css' rel='stylesheet' />
+    <link href='../assets/fullcalendar-4.3.1/packages/list/main.css' rel='stylesheet' />
+</head>
+
+<body>
+
+    <div class="card-body" style="width:20%;float:left">
+        <style>
+            .fc-event {
+                margin: 10px;
+            }
+        </style>
+        <div id='external-events-list'>
+            <div class='fc-event' data-id="1">My Event 1</div>
+            <div class='fc-event' data-id="2">My Event 2</div>
+            <div class='fc-event' data-id="3">My Event 3</div>
+            <div class='fc-event' data-id="4">My Event 4</div>
+            <div class='fc-event' data-id="5">My Event 5</div>
+            <div class='fc-event' data-id="6">My Event 6</div>
+            <div class='fc-event' data-id="7">My Event 7</div>
+            <div class='fc-event' data-id="8">My Event 8</div>
+            <div class='fc-event' data-id="9">My Event 9</div>
+            <div class='fc-event' data-id="10">My Event 10</div>
+            <div class='fc-event' data-id="11">My Event 11</div>
+        </div>
+        <p style="display:none">
+            <input type='checkbox' id='drop-remove' />
+            <label for='drop-remove'>remove after drop</label>
+        </p>
+    </div>
+    <div class="card-body" style="width:77%;float:right">
+        <div id='calendar'></div>
+    </div>
+    <script src="../Scripts/jquery-3.4.1.js"></script>
+    <script src='../assets/fullcalendar-4.3.1/packages/core/main.js'></script>
+    <script src='../assets/fullcalendar-4.3.1/packages/interaction/main.js'></script>
+    <script src='../assets/fullcalendar-4.3.1/packages/daygrid/main.js'></script>
+    <script src='../assets/fullcalendar-4.3.1/packages/timegrid/main.js'></script>
+    <script src='../assets/fullcalendar-4.3.1/packages/list/main.js'></script>
+
+    <script src="../Scripts/moment.js"></script>
+    <script>
+
+        var events = [];
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var Draggable = FullCalendarInteraction.Draggable;
+
+            /* initialize the external events
+            -----------------------------------------------------------------*/
+            var containerEl = document.getElementById('external-events-list');
+            new Draggable(containerEl, {
+                itemSelector: '.fc-event',
+                eventData: function (eventEl) {
+                    //console.log($(eventEl).attr("data-id"));
+                    var evt = {
+                        title: eventEl.innerText.trim(),
+                        extendedProps: {
+                            pojectid: 100,
+                            planid: 2,
+                            projectplanid: 200
+                        },
+                        id: 100
+                    };
+                    events[events.length] = evt;
+                    console.log("Draggable-eventData");
+                    return evt;
+                }
+            });
+
+        });
+
+        var Calendar = FullCalendar.Calendar;
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new Calendar(calendarEl, {
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            locale: 'zh-cn',
+            buttonText: {
+                today: '今天',
+                month: '月',
+                week: '周',
+                day: '日'
+            },
+            editable: true,
+            droppable: true, // this allows things to be dropped onto the calendar
+            drop: function (arg) {
+                // is the "remove after drop" checkbox checked?
+                if (document.getElementById('drop-remove').checked) {
+                    // if so, remove the element from the "Draggable Events" list
+                    arg.draggedEl.parentNode.removeChild(arg.draggedEl);
+                }
+                //获取属性id
+                //console.log(arg);
+                //console.log($(arg.draggedEl).attr("data-id"));
+                console.log("calendar.drop");
+            },
+            events: events,
+
+            eventClick: function (arg) {
+                console.log(arg.event.extendedProps.pojectid);
+            },
+
+            eventDrop: function (info) {
+                console.log("eventReceive：" + info.event.title + " was dropped on " + info.event.start);
+            },
+
+            eventReceive: function (info) {
+                //默认一天，可以改成跨天
+                console.log("eventReceive：" + info.event.id + " " + info.event.title + " was eventReceive on " + info.event.start);
+                var start = info.event.start;
+                info.event.setDates(start, moment(start).add(3, "days"));
+            },
+
+            eventResize: function (arg) {
+                //console.log(arg.event.extendedProps.pojectid);
+                console.log("eventResize " + arg.event.title);
+            }
+        });
+
+        calendar.render();
+    </script>
+</body>
+</html>

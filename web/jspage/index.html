@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="page.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-3.4.1.min.js"></script>
+    <script src="xlPaging.js"></script>
+</head>
+<body>
+    <div id="page"></div>
+    <script>
+        $().ready(function () {
+            $("#page").paging({
+                nowPage: 5, // 当前页码
+                pageNum: 30, // 总页码
+                buttonNum: 6, //要展示的页码数量
+                canJump: 0,// 是否能跳转。0=不显示（默认），1=显示
+                showOne: 1,//只有一页时，是否显示。0=不显示,1=显示（默认）
+                callback: function (num) { //回调函数
+                    console.log(num);
+                }
+            });
+        });
+        /*
+         *
+         * 请求数据后设置分页的方式如下
+         *
+         *
+         * */
+        var setpage = false;//是否设置过总页数
+        //请求数据设置分页方式
+        function loaddata(page) {
+            $.getJSON("/api.aspx?r=" + Math.random(), { page: page }, function (res) {
+                //var rs = JSON.parse(res);
+                console.log(res);
+                if (!setpage) {
+                    $("#page").paging({
+                        nowPage: page, // 当前页码
+                        pageNum: res.pagecount, // 总页码
+                        buttonNum: 6, //要展示的页码数量
+                        canJump: 0,// 是否能跳转。0=不显示（默认），1=显示
+                        showOne: 1,//只有一页时，是否显示。0=不显示,1=显示（默认）
+                        callback: function (num) { //回调函数
+                            console.log(num);
+                            loaddata(num);
+                        }
+                    });
+                    setpage = true;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
