@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #hanzi {
+            margin: 10px;
+            border: 1px solid #4c4c15;
+            font-size: 15px;
+            padding: 5px;
+        }
+
+        #py {
+            margin: 10px;
+            border: 1px solid red;
+            width: 90%;
+            height: 70px;
+            padding: 5px;
+        }
+
+        button {
+            margin: 10px;
+            width: 100px;
+            height: 40px;
+            background: #3ccaca;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <textarea id="hanzi" rows="3" cols="45">阿里巴巴与四十大盗</textarea>
+        <div id="py"></div>
+
+        <button onclick="parsePy();">转拼音</button>
+    </div>
+</body>
+<script src="./pinyin.min.js"></script>
+<script>
+    function parsePy() {
+        var hanzi = document.getElementById('hanzi').value
+        var py = parsePinyin(hanzi, function (charactor, spell) {
+            if (charactor === '阿') {
+                return spell[1]
+            }
+            return spell[0];
+        })
+        document.getElementById('py').innerText = py
+    }
+</script>
+
+</html>
