@@ -122,7 +122,8 @@
                 //默认一天，可以改成跨天
                 console.log("eventReceive：" + info.event.id + " " + info.event.title + " was eventReceive on " + info.event.start);
                 var start = info.event.start;
-                info.event.setDates(start, moment(start).add(3, "days"));
+                alert(moment(start).add(3, "days").format("YYYY-MM-DD"));
+                info.event.setDates(start, moment(start).add(3, "days").format("YYYY-MM-DD"));
             },
 
             eventResize: function (arg) {
